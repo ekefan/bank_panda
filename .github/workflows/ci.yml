@@ -14,11 +14,11 @@ jobs:
 
     services:
       postgres:
-      image: postgres
-      env:
-        POSTGRES_USER: root
-        POSTGRES_PASSWORD: secret
-        POSTGRES_DB: simpleBank
+        image: postgres
+        env:
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: secret
+          POSTGRES_DB: simpleBank
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
