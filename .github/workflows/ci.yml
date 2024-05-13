@@ -1,0 +1,40 @@
+name: ci-test
+
+on: 
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+      images: postgres
+      env:
+        POSTGRES_USER: root
+        POSTGRES_PASSWORD: secret
+        POSTGRES_DB: simpleBank
+      options: >-
+        --health-cmd pd_isready
+        --health-interval 10s
+        --health-interval 5s
+        --health-retries 5
+
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.22
+        id: go
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Run migration
+        run: make migrateup
+      - name: Test
+        run: make testdb
