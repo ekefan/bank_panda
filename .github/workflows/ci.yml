@@ -35,11 +35,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install migrate
-        run: |
-          wget https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz
-          tar -zxvf migrate.linux-amd64.tar.gz
-          mv migrate.linux-amd64/migrate /usr/local/bin/
-          rm -rf migrate.linux-amd64 migrate.linux-amd64.tar.gz
+        run: go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
       
       - name: Run migration
         run: make migrateup
