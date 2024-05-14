@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"os"
 	"testing"
@@ -26,7 +25,7 @@ func TestMain(m *testing.M) {
 	testQueries = New(conn)
 
 	testStore = NewStore(conn)
-	fmt.Println("connection established with the database")
+	// fmt.Println("connection established with the database")
 	os.Exit(m.Run())
 
 }
