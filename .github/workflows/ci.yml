@@ -20,7 +20,7 @@ jobs:
           - 5432:5432
         env:
           POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
+          POSTGRES_PASSWORD: secret
           POSTGRES_DB: simpleBank
         options: >-
           --health-cmd pg_isready
