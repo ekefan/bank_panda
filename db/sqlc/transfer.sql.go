@@ -26,7 +26,7 @@ type CreateTransferParams struct {
 }
 
 func (q *Queries) CreateTransfer(ctx context.Context, arg CreateTransferParams) (Transfer, error) {
-	row := q.queryRow(ctx, q.createTransferStmt, createTransfer, arg.FromAccountID, arg.ToAccountID, arg.Amount)
+	row := q.db.QueryRowContext(ctx, createTransfer, arg.FromAccountID, arg.ToAccountID, arg.Amount)
 	var i Transfer
 	err := row.Scan(
 		&i.ID,
@@ -45,7 +45,7 @@ LIMIT 1
 `
 
 func (q *Queries) GetTransfer(ctx context.Context, id int64) (Transfer, error) {
-	row := q.queryRow(ctx, q.getTransferStmt, getTransfer, id)
+	row := q.db.QueryRowContext(ctx, getTransfer, id)
 	var i Transfer
 	err := row.Scan(
 		&i.ID,
@@ -70,7 +70,7 @@ type GetTransfersParams struct {
 }
 
 func (q *Queries) GetTransfers(ctx context.Context, arg GetTransfersParams) ([]Transfer, error) {
-	rows, err := q.query(ctx, q.getTransfersStmt, getTransfers, arg.Limit, arg.Offset)
+	rows, err := q.db.QueryContext(ctx, getTransfers, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -88,9 +88,6 @@ func (q *Queries) GetTransfers(ctx context.Context, arg GetTransfersParams) ([]T
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
