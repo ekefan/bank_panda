@@ -7,18 +7,20 @@ import (
 	"testing"
 
 	_ "github.com/lib/pq"
+	"github.com/ekefan/bank_panda/utils"
 )
 
-const (
-	dbConnSignal = "postgresql://root:secret@localhost:5432/simpleBank?sslmode=disable"
-	dbDriver     = "postgres"
-)
 
-var testStore *Store
+var testStore Store
 var testQueries *Queries
 
 func TestMain(m *testing.M) {
-	conn, err := sql.Open(dbDriver, dbConnSignal)
+	config, err := utils.LoadConfig("../..")
+	if err != nil {
+		log.Fatal("cannot load config: ", err)
+	}
+
+	conn, err := sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		log.Fatal("Can not connect to db", err)
 	}

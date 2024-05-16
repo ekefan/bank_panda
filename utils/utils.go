@@ -3,6 +3,7 @@ package utils
 import (
 	"math/rand"
 	"time"
+	"fmt"
 	"strings"
 )
 
@@ -12,6 +13,11 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
+
+//Random Email generates a random email like address for testing
+func RandomEmail() string {
+	return fmt.Sprintf("%v@email.com", randomString(4))
+}
 //Random int generates a random integer between min and max
 func RandomInt(min, max int64) int64 {
 	return min + rand.Int63n(max-min+1)
@@ -37,7 +43,7 @@ func RandomBalance() int64 {
 }
 
 func RandomCurrency() string {
-	currencies := []string{"USD", "EUR", "CAD"}
+	currencies := []string{USD, CAD, EUR}
 	lenCurrencies := len(currencies)
 	return currencies[rand.Intn(lenCurrencies)] 
 }
