@@ -16,14 +16,14 @@ func init() {
 
 //Random Email generates a random email like address for testing
 func RandomEmail() string {
-	return fmt.Sprintf("%v@email.com", randomString(4))
+	return fmt.Sprintf("%v@email.com", RandomString(4))
 }
 //Random int generates a random integer between min and max
 func RandomInt(min, max int64) int64 {
 	return min + rand.Int63n(max-min+1)
 }
 
-func randomString(n int) string {
+func RandomString(n int) string {
 	var sb  strings.Builder
 	lenAlphabets := len(alphabets)
 	for i := 0; i < n; i++ {
@@ -35,7 +35,7 @@ func randomString(n int) string {
 
 //Util  to generate random account owner name
 func RandomOwner() string {
-	return randomString(5)
+	return RandomString(5)
 }
 
 func RandomBalance() int64 {
