@@ -66,7 +66,7 @@ func TestGetAccountAPI(t *testing.T) {
 
 
 		// start test server and send request
-			server := NewServer(mockStore)
+			server := newTestServer(t, mockStore)
 			recorder := httptest.NewRecorder()
 
 			url := fmt.Sprintf("/accounts/%v", account.ID)
