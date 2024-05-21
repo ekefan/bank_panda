@@ -1,14 +1,14 @@
 package db
 
 import (
-	"testing"
 	"context"
 	"database/sql"
-	"github.com/ekefan/bank_panda/utils"
+	"testing"
 	"time"
+
+	"github.com/ekefan/bank_panda/utils"
 	"github.com/stretchr/testify/require"
 )
-
 
 //create the params for creating an account
 
@@ -96,7 +96,7 @@ func TestListAccounts(t *testing.T) {
 	listParams := ListAccountsParams{
 		Owner: lastAccount.Owner,		
 		Limit: 5,
-		Offset: 5,
+		Offset: 0,
 	}
 
 	accounts, err := testQueries.ListAccounts(context.Background(), listParams)
