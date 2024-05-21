@@ -1,14 +1,14 @@
 package db
 
 import (
-	"testing"
 	"context"
 	"database/sql"
-	"github.com/ekefan/bank_panda/utils"
+	"testing"
 	"time"
+
+	"github.com/ekefan/bank_panda/utils"
 	"github.com/stretchr/testify/require"
 )
-
 
 //create the params for creating an account
 
@@ -88,23 +88,25 @@ func TestUpdateAccount(t *testing.T) {
 
 
 func TestListAccounts(t *testing.T) {
+	var lastAccount Account
 	for i := 0; i < 10; i++ {
-		createRandomAccount(t)
+		lastAccount = createRandomAccount(t)
+	
 	}
-
 	listParams := ListAccountsParams{
+		Owner: lastAccount.Owner,		
 		Limit: 5,
-		Offset: 5,
+		Offset: 0,
 	}
 
 	accounts, err := testQueries.ListAccounts(context.Background(), listParams)
 
 	require.NoError(t, err)
-	lenAccounts := int32(len(accounts))
-	require.Equal(t, listParams.Limit, lenAccounts)
 	require.NotEmpty(t, accounts)
+
 	for _, acc := range accounts {
 		require.NotEmpty(t, acc)
+		require.Equal(t, lastAccount.Owner, acc.Owner)
 	}
 
 }

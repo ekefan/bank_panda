@@ -16,7 +16,7 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-
+//I had not implemented the user_test package
 func randomAccount() db.Account {
 	return db.Account{
 		ID: util.RandomInt(1, 1000),
@@ -26,6 +26,7 @@ func randomAccount() db.Account {
 	}
 }
 func TestGetAccountAPI(t *testing.T) {
+
 	account := randomAccount()
 
 	// creating a table of test cases to cover
