@@ -12,11 +12,10 @@ import (
 )
 
 type transferRequest struct {
-	FromAccountID    int64 `json:"from_account_id" binding:"required,min=1"`
-	ToAccountID  int64 `json:"to_account_id" binding:"required,min=1"`
-	Amount int64 `json:"amount" binding:"required,gt=0"`
-	Currency string `json:"currency" binding:"required,oneof=currency"`
-
+	FromAccountID int64  `json:"from_account_id" binding:"required,min=1"`
+	ToAccountID   int64  `json:"to_account_id" binding:"required,min=1"`
+	Amount        int64  `json:"amount" binding:"required,gt=0"`
+	Currency      string `json:"currency" binding:"required,currency"`
 }
 
 func (server *Server) createTransfer(ctx *gin.Context) {
@@ -27,26 +26,26 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 		return //errorResponse return a key value, so gin can jsonify the error message
 	}
 
-	fromAccount, valid := server.validAccount(ctx, req.FromAccountID, req.Currency) 
-	if !valid{
-		return 
+	fromAccount, valid := server.validAccount(ctx, req.FromAccountID, req.Currency)
+	if !valid {
+		return
 	}
-	
+
 	authPayload := ctx.MustGet(authorizationHeaderKey).(*token.Payload)
-	if authPayload.Username != fromAccount.Owner{
+	if authPayload.Username != fromAccount.Owner {
 		err := errors.New("from account does not belong to the authenticated user")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 
 	}
 	_, valid = server.validAccount(ctx, req.ToAccountID, req.Currency)
-	if !valid{
+	if !valid {
 		return
 	}
 	args := db.CreateTransferParams{
 		FromAccountID: req.FromAccountID,
-		ToAccountID: req.ToAccountID,
-		Amount: req.Amount,
+		ToAccountID:   req.ToAccountID,
+		Amount:        req.Amount,
 	}
 
 	result, err := server.store.TransferTx(ctx, args)
@@ -72,13 +71,12 @@ func (server *Server) validAccount(ctx *gin.Context, accountId int64, currency s
 			switch pqErr.Code.Name() {
 			case "unique_violation", "foreign_key_violation":
 				ctx.JSON(http.StatusForbidden, errorResponse(err))
-				return account, false 
+				return account, false
 			}
 		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return account, false
 	}
-
 
 	if account.Currency != currency {
 		err := fmt.Errorf("account (%d) currency mismatch: %s vs %s", accountId, account.Currency, currency)
