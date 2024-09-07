@@ -21,7 +21,7 @@ jobs:
         env:
           POSTGRES_USER: root
           POSTGRES_PASSWORD: secret
-          POSTGRES_DB: simpleBank
+          POSTGRES_DB: bank_panda
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
