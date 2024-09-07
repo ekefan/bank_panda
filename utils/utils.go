@@ -10,7 +10,7 @@ import (
 var alphabets = "abcdefghijklmnopkrstuvwxyz"
 
 func init() {
-	rand.Seed(time.Now().UnixNano())
+	rand.Seed(time.Now().UnixNano()) // rand.Seed set the current seed to ensure different generated values
 }
 
 

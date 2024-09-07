@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -23,8 +24,11 @@ func TestTransferTx(t *testing.T) {
 	errorChan := make(chan error)
 	//create n transactions between two accounts
 	for i := 0; i < n; i++ {
+		//to monitor which transaction is blocking
+		txName := fmt.Sprintf("tx %d", i + 1)
 		go func() {
-			txResult, err := testStore.TransferTx(context.Background(), txArgs)
+			ctx := context.WithValue(context.Background(), txKey, txName)
+			txResult, err := testStore.TransferTx(ctx, txArgs)
 
 			resultChan <- txResult
 			errorChan <- err
@@ -42,18 +46,21 @@ func TestTransferTx(t *testing.T) {
 		//check for transfers
 		transfer := txRes.Transfer
 		require.NotEmpty(t, transfer)
-		_, err := testQueries.GetTransfer(context.Background(), transfer.ID)
-		require.NoError(t, err)
-		require.NotEmpty(t, transfer.ID)
-		require.NotEmpty(t, transfer.CreatedAt)
 		require.Equal(t, txArgs.Amount, transfer.Amount)
 		require.Equal(t, txArgs.FromAccountID, transfer.FromAccountID)
 		require.Equal(t, txArgs.ToAccountID, transfer.ToAccountID)
+		require.NotZero(t, transfer.ID)
+		require.NotZero(t, transfer.CreatedAt)
+		
+
+		_, err := testQueries.GetTransfer(context.Background(), transfer.ID)
+		require.NoError(t, err)
 
 		//check for entry
 		fromEntry := txRes.FromEntry
 		require.NotEmpty(t, fromEntry)
 		require.Equal(t, accountFrom.ID, fromEntry.AccountID)
+ 
 
 		toEntry := txRes.ToEntry
 		require.NotEmpty(t, toEntry)
@@ -71,8 +78,7 @@ func TestTransferTx(t *testing.T) {
 		require.Equal(t, accountTo.ID, toAccount.ID)
 
 
-		//after updating the account
-		//check the balance
+		//check th  e balance
 		amountFromAccount := accountFrom.Balance - fromAccount.Balance
 		amountToAccount := toAccount.Balance - accountTo.Balance
 		require.Equal(t, amountFromAccount, amountToAccount)
@@ -87,8 +93,8 @@ func TestTransferTx(t *testing.T) {
 
 	//check final balance and accounts exist
 	updatedFromAccount, frmErr := testQueries.GetAccount(context.Background(), accountFrom.ID)
-	updatedToAccount, toErr := testQueries.GetAccount(context.Background(), accountTo.ID)
 	require.NoError(t, frmErr)
+	updatedToAccount, toErr := testQueries.GetAccount(context.Background(), accountTo.ID)
 	require.NoError(t, toErr)
 	require.NotEmpty(t, updatedFromAccount)
 	require.NotEmpty(t, updatedToAccount)

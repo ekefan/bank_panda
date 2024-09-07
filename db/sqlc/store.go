@@ -4,12 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-)
+)   
 
 type Store interface {
 	Querier
 	TransferTx(ctx context.Context, arg CreateTransferParams) (TransferTxResult, error)
-
 }
 type SQLStore struct {
 	db *sql.DB
@@ -17,19 +16,19 @@ type SQLStore struct {
 }
 
 func NewStore(db *sql.DB) Store {
-	//remeber an interface takes the type of any struct that calls it. 
+	//remeber an interface takes the type of any struct that calls it.
 	return &SQLStore{
 		db:      db,
 		Queries: New(db),
 	}
 }
 
-func (store * SQLStore) execTx(ctx context.Context, fn func(*Queries) error) error {
+func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) error {
 	tx, err := store.db.BeginTx(ctx, nil)
-	if err != nil {  
+	if err != nil {
 		return err
 	}
-	txQuery  := New(tx)
+	txQuery := New(tx)
 	txErr := fn(txQuery)
 	if txErr != nil {
 		if rbErr := tx.Rollback(); rbErr != nil {
@@ -50,6 +49,10 @@ type TransferTxResult struct {
 	ToEntry     Entry    `json:"to_entry"`
 }
 
+var txKey = struct {
+	txName string
+}{}
+
 // TransferTx performs a money transfer from one account to another
 // It creates a transfer record, adds account entries, and updates
 // the balance of both accounts involved within a single database transaction
@@ -58,12 +61,10 @@ func (store *SQLStore) TransferTx(ctx context.Context, arg CreateTransferParams)
 	err := store.execTx(ctx, func(q *Queries) error {
 		var transTxErr error
 
-
 		result.Transfer, transTxErr = q.CreateTransfer(ctx, arg)
 		if transTxErr != nil {
 			return transTxErr
 		}
-
 
 		result.FromEntry, transTxErr = q.CreateEntry(ctx, CreateEntryParams{
 			AccountID: arg.FromAccountID,
@@ -100,14 +101,15 @@ func (store *SQLStore) TransferTx(ctx context.Context, arg CreateTransferParams)
 	})
 	return result, err
 }
+
 // updates the account with a higher account id
-func updateTopAccBalance(ctx context.Context, q *Queries, account1, amount1,  account2, amount2 int64)(Account, Account, error){
+func updateTopAccBalance(ctx context.Context, q *Queries, account1, amount1, account2, amount2 int64) (Account, Account, error) {
 	acc1Params := UpdateAccountBalanceParams{
-		ID: account1,
+		ID:     account1,
 		Amount: amount1,
 	}
 	acc2Params := UpdateAccountBalanceParams{
-		ID: account2,
+		ID:     account2,
 		Amount: amount2,
 	}
 	fromAccount, hErr := q.UpdateAccountBalance(ctx, acc1Params)
