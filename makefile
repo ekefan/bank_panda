@@ -8,15 +8,15 @@ dropdb:
 	docker exec simpleBank dropdb bank_panda
 
 migrateup:
-	migrate -path ./db/migrations -database "postgresql://root:secret@localhost:5432/bank_panda?sslmode=disable" -verbose up
+	migrate -path ./db/migrations -database "postgresql://root:9hafAZzagLg3l6zN5HG1@simple-bank.cp2oqo4yuqpu.eu-west-2.rds.amazonaws.com:5432/bankpanda" -verbose up
 migrateup1:
-	migrate -path ./db/migrations -database "postgresql://root:secret@localhost:5432/bank_panda?sslmode=disable" -verbose up 1
+	migrate -path ./db/migrations -database "postgresql://root:9hafAZzagLg3l6zN5HG1@simple-bank.cp2oqo4yuqpu.eu-west-2.rds.amazonaws.com:5432/bankpanda" -verbose up 1
 
 migratedown:
-	migrate -path ./db/migrations -database "postgresql://root:secret@localhost:5432/bank_panda?sslmode=disable" -verbose down
+	migrate -path ./db/migrations -database "postgresql://root:9hafAZzagLg3l6zN5HG1@simple-bank.cp2oqo4yuqpu.eu-west-2.rds.amazonaws.com:5432/bankpanda" -verbose down
 
 migratedown1:
-	migrate -path ./db/migrations -database "postgresql://root:secret@localhost:5432/bank_panda?sslmode=disable" -verbose down 1
+	migrate -path ./db/migrations -database "postgresql://root:9hafAZzagLg3l6zN5HG1@simple-bank.cp2oqo4yuqpu.eu-west-2.rds.amazonaws.com:5432/bankpanda" -verbose down 1
 sqlc:
 	sqlc generate
 
