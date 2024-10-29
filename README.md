@@ -10,7 +10,7 @@ This a growing project as it introduces more complexities of backend development
 
 ## Runing the code locally on your machine
 
-To have to the entire project up and running in your local machine, you need docker engine.
+To have to the entire project up and running in your local machine, you need clone this repo and have docker engine install on your computer.
 
 then use this command in the root directory:
 
