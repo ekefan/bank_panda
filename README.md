@@ -28,4 +28,4 @@ After login, access to resouces is authorized and authenticated using web tokens
 
 ## Future Updates
 
-Using grpc, and an api gate way to serve but rest and grpc endpoints
+Using grpc, and an api gate way to serve both rest and grpc endpoints
